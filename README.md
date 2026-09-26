@@ -11,6 +11,7 @@
 | **[INSTALL.md](INSTALL.md)** | Install in Claude Desktop, Claude Code, OpenAI Codex, ChatGPT, Copilot Studio, Copilot Cowork or Microsoft 365 Copilot |
 | **[TRY_IT.md](TRY_IT.md)** | Try every tool with ready-made prompts and commands, with screenshots |
 | **[DEPLOYMENT.md](DEPLOYMENT.md)** | Host it (Dev Tunnels or Azure) for Microsoft 365 and ChatGPT; networking and offline use |
+| **[GRAPH_SETUP.md](GRAPH_SETUP.md)** | Set up the automatic Copilot usage download from Microsoft Graph: what the client's admin does, what you do, and how sign-in works |
 | **[FILES.md](FILES.md)** | Find out what every file and folder is for |
 
 A beginner-friendly [Model Context Protocol](https://modelcontextprotocol.io) server that gives an AI assistant tools a Microsoft Copilot consultant uses with clients. It has no API keys or databases.
@@ -37,7 +38,7 @@ A beginner-friendly [Model Context Protocol](https://modelcontextprotocol.io) se
 | Tool | `find_use_cases` | Suggests agent use cases by industry and function |
 | Tool | `estimate_roi` | Copilot ROI in text, using Microsoft's assisted-hours method |
 | Tool | `summarise_copilot_export` | Summarises a Copilot Dashboard export and calculates assisted hours |
-| Tool | `download_copilot_usage` | Downloads Microsoft 365 Copilot usage reports (v2) from Microsoft Graph to Downloads (optional setup: [INSTALL.md](INSTALL.md#h-automatic-copilot-usage-download-microsoft-graph)) |
+| Tool | `download_copilot_usage` | Downloads Microsoft 365 Copilot usage reports (v2) from Microsoft Graph to Downloads (optional setup: [GRAPH_SETUP.md](GRAPH_SETUP.md)) |
 | Tool | `create_roi_dashboard` | Saves an interactive, branded HTML dashboard to `output/` |
 | Tool | `create_client_deck` | Saves a client-facing PowerPoint deck (native charts, clickable agenda, speaker notes, optional template) |
 | Tool | `list_logos` | Lists the partner and customer logos saved in `assets/` |
@@ -87,7 +88,7 @@ The Copilot Dashboard export has no API, but the **Microsoft 365 Copilot usage r
 in the browser (their own account and MFA, no stored secret) and `download_copilot_usage` saves them to your
 Downloads folder. You get
 adoption by app, prompts and active days, but not meeting hours or creation actions, so it gives a prompt-based
-**lower-bound** for assisted hours. Setup, and how sign-in works: [INSTALL.md section H](INSTALL.md#h-automatic-copilot-usage-download-microsoft-graph).
+**lower-bound** for assisted hours. Setup, step by step, and how sign-in works: [GRAPH_SETUP.md](GRAPH_SETUP.md).
 
 ## Currencies: USD and SGD
 

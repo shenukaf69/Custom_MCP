@@ -353,7 +353,7 @@ def download_copilot_usage(period: graph_usage.Period = "D28", tenant_profile: s
                            save_to: str = "") -> str:
     """Download the client's Microsoft 365 Copilot usage reports (v2) from Microsoft Graph as CSV files.
 
-    Uses the Entra ID app registration set up in environment variables (see INSTALL.md section H). On a PC,
+    Uses the Entra ID app registration set up in environment variables (see GRAPH_SETUP.md). On a PC,
     a Microsoft sign-in page opens in the browser and an admin signs in with their own account; if the tool
     says the sign-in is still open, tell the user to finish it and then call this tool again. Never ask the
     user for a password, secret or code in the chat. Saves three CSVs (user detail, summary, daily trend) to the Downloads
@@ -729,7 +729,7 @@ def copilot_export_guide() -> str:
         "Requires at least 50 Copilot or Viva Insights licences. Personal identifiers are anonymised.\n"
         "Automatic alternative: download_copilot_usage gets the Microsoft 365 Copilot usage reports (v2) from "
         "Microsoft Graph (adoption, prompts, active days; no meeting hours or creation actions). "
-        "It needs an Entra ID app with Reports.Read.All and an admin sign-in (INSTALL.md section H).\n"
+        "It needs an Entra ID app with Reports.Read.All and an admin sign-in (GRAPH_SETUP.md).\n"
         "Docs: https://learn.microsoft.com/viva/insights/org-team-insights/export-copilot-metrics"
     )
 

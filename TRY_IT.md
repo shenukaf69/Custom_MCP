@@ -83,7 +83,7 @@ Estimate Copilot ROI in SGD: 300 users, 70% adoption, 1 meeting hour summarised,
 
 
 Download real usage from the client's tenant with Microsoft Graph. This needs the one-off setup in
-[INSTALL.md section H](INSTALL.md#h-automatic-copilot-usage-download-microsoft-graph):
+[GRAPH_SETUP.md](GRAPH_SETUP.md):
 ```
 Download Copilot usage for the last 28 days.
 ```
@@ -161,7 +161,7 @@ start output\copilot_deck_Demo_Client.pptx
 # Logos
 python -c "import server; print(server.list_logos())"
 
-# Copilot usage from Microsoft Graph (after the setup in INSTALL.md section H)
+# Copilot usage from Microsoft Graph (after the setup in GRAPH_SETUP.md)
 python -c "import server; print(server.download_copilot_usage(period='D28'))"
 python -c "import server; print(server.download_copilot_usage(period='D90', tenant_profile='contoso'))"
 ```

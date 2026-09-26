@@ -232,7 +232,7 @@ The MCP needs no internet, except for `download_copilot_usage`. Everything below
 | `assess_readiness`, `recommend_tier`, `find_use_cases`, `plan_build_along` | Yes | Rules and data in `consulting.py` |
 | `estimate_roi` | Yes | Built-in maths and constants in `roi.py` |
 | `summarise_copilot_export` | Yes | The CSV file on your disk |
-| `download_copilot_usage` | **No** | Microsoft Graph (`login.microsoftonline.com`, `graph.microsoft.com`) with the app registration in [INSTALL.md section H](INSTALL.md#h-automatic-copilot-usage-download-microsoft-graph) |
+| `download_copilot_usage` | **No** | Microsoft Graph (`login.microsoftonline.com`, `graph.microsoft.com`) with the app registration in [GRAPH_SETUP.md](GRAPH_SETUP.md) |
 | `create_roi_dashboard`, `create_client_deck` | Yes | Logos and templates from files or `assets/`; only an `https://` logo link needs internet, to download it |
 | `list_logos`, both resources, the `discovery_call` prompt | Yes | Files and text in the repository |
 | Generated dashboards and decks | Yes | Everything is built into the file; only the source links on the Method tab and slide need internet when clicked |

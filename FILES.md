@@ -7,9 +7,10 @@ Created by Shenuka Fernando. © 2026 Shenuka Fernando. All rights reserved.
 | File | What it's for |
 |------|---------------|
 | `README.md` | Overview: what the MCP does, its tools, how the ROI is calculated, the dashboard and deck |
-| `INSTALL.md` | Installing in Claude Desktop, Claude Code, OpenAI Codex, ChatGPT, Copilot Studio, Copilot Cowork and Microsoft 365 Copilot; setting up the Microsoft Graph usage download |
+| `INSTALL.md` | Installing in Claude Desktop, Claude Code, OpenAI Codex, ChatGPT, Copilot Studio, Copilot Cowork and Microsoft 365 Copilot |
 | `TRY_IT.md` | Prompts and PowerShell commands to try every tool, with screenshots of real results |
 | `DEPLOYMENT.md` | Running it as a web service (Dev Tunnels or Azure), step-by-step Microsoft 365 setup, networking and offline use |
+| `GRAPH_SETUP.md` | Step-by-step setup of the automatic Copilot usage download: an email for the client's admin, the Entra app registration, your PC settings, how sign-in works, errors, and hosted use |
 | `FILES.md` | This file |
 | `COPYRIGHT` | Ownership and copyright notice (all rights reserved), and trademark notes |
 

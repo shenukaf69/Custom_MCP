@@ -93,11 +93,11 @@ def settings(profile: str = "", hosted: bool = False) -> dict:
         needed["client_secret"] = f"COPILOT_GRAPH_CLIENT_SECRET{suffix}"
     elif hosted:
         raise GraphError("Browser sign-in only works when the MCP runs on your PC. On a hosted server, set "
-                         "COPILOT_GRAPH_AUTH=secret and the client secret (see INSTALL.md section H).")
+                         "COPILOT_GRAPH_AUTH=secret and the client secret (see GRAPH_SETUP.md).")
     missing = [name for key, name in needed.items() if not cfg.get(key)]
     if missing:
         raise GraphError("Not set up yet: set the environment variable(s) " + ", ".join(missing) +
-                         " and restart the app. See INSTALL.md section H.")
+                         " and fully restart the app. See GRAPH_SETUP.md, step 2.")
     return cfg
 
 
