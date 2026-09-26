@@ -225,6 +225,23 @@ Remove-Variable secret
 
 Then **fully quit Claude Desktop** (tray icon > Quit) and reopen it, so it picks up the new variables.
 
+**No local admin rights needed.** These are *user* variables (the `"User"` part), stored in your own profile, so
+Windows doesn't ask for admin rights. Only `"Machine"` variables need them, and the MCP doesn't use those.
+Claude Desktop runs as you, so it can read them and passes them on to the MCP.
+
+Without PowerShell: search the Start menu for **Edit environment variables for your account**, then under
+**User variables** select **New** for each variable. This doesn't need admin rights either.
+
+Check they're set without showing the secret (each line should print `True`):
+
+```powershell
+"COPILOT_GRAPH_TENANT_ID", "COPILOT_GRAPH_CLIENT_ID", "COPILOT_GRAPH_CLIENT_SECRET" |
+  ForEach-Object { "$_ : " + [bool][Environment]::GetEnvironmentVariable($_, "User") }
+```
+
+The only admin involved is the client's **Microsoft Entra** admin, who creates the app registration and grants
+consent in step 1. That's a cloud role in the client's tenant, not admin rights on your laptop.
+
 **Alternative: the Claude Desktop config.** Add an `env` block to the server entry. It works, but the secret is
 then stored as plain text in `claude_desktop_config.json`, so don't share or back up that file anywhere public:
 
