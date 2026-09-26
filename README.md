@@ -4,6 +4,8 @@
 
 > Independent personal project by Shenuka INC. Not an official Microsoft product, and not endorsed by Microsoft.
 
+**New here?** See **[TRY_IT.md](TRY_IT.md)** for setup, prompts and commands to try every tool, with screenshots.
+
 A beginner-friendly [Model Context Protocol](https://modelcontextprotocol.io) server that gives an AI assistant tools a Microsoft Copilot consultant uses with clients. It has no API keys or databases.
 
 | File | Job |
@@ -17,7 +19,9 @@ A beginner-friendly [Model Context Protocol](https://modelcontextprotocol.io) se
 | `m365/cowork-plugin/` | Copilot Cowork plugin: skill, icons and package builder |
 | `Dockerfile`, `DEPLOYMENT.md` | Running in Azure and using it in Copilot Studio, Cowork and Microsoft 365 Copilot |
 | `assets/` | Partner logos (`partners/`), customer logos (`customers/`) and PowerPoint templates (`templates/`) |
-| `samples/` | Synthetic Copilot Dashboard export for testing |
+| `samples/` | Synthetic Copilot Dashboard export, a sample client deck and a saved dashboard |
+| `docs/screenshots/` | Screenshots of the MCP running in Claude Desktop |
+| `TRY_IT.md` | Prompts and commands to try every tool |
 
 | Type | Name | What it does |
 |------|------|--------------|
