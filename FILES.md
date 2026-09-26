@@ -7,7 +7,7 @@ Created by Shenuka Fernando. © 2026 Shenuka Fernando. All rights reserved.
 | File | What it's for |
 |------|---------------|
 | `README.md` | Overview: what the MCP does, its tools, how the ROI is calculated, the dashboard and deck |
-| `INSTALL.md` | Installing in Claude Desktop, Claude Code, OpenAI Codex, ChatGPT, Copilot Studio, Copilot Cowork and Microsoft 365 Copilot |
+| `INSTALL.md` | Installing in Claude Desktop, Claude Code, OpenAI Codex, ChatGPT, Copilot Studio, Copilot Cowork and Microsoft 365 Copilot; setting up the Microsoft Graph usage download |
 | `TRY_IT.md` | Prompts and PowerShell commands to try every tool, with screenshots of real results |
 | `DEPLOYMENT.md` | Running it as a web service (Dev Tunnels or Azure), step-by-step Microsoft 365 setup, networking and offline use |
 | `FILES.md` | This file |
@@ -17,10 +17,11 @@ Created by Shenuka Fernando. © 2026 Shenuka Fernando. All rights reserved.
 
 | File | What it does |
 |------|--------------|
-| `server.py` | **Start here.** Defines the MCP server and its 9 tools, 2 resources and 1 prompt; the default partner branding (Shenuka INC); logo and template lookup; and web-service mode (`python server.py --http`) with API key, download links and Cowork file attachments |
+| `server.py` | **Start here.** Defines the MCP server and its 10 tools, 2 resources and 1 prompt; the default partner branding (Shenuka INC); logo and template lookup; and web-service mode (`python server.py --http`) with API key, download links and Cowork file attachments |
 | `consulting.py` | Consulting knowledge: the three build tiers, the use-case library by function, industry tips, readiness scoring rules and the tier-recommendation rules. Edit this to change your playbook |
 | `roi.py` | The ROI maths: Microsoft's Copilot assisted hours method, value, cost, ROI, payback, break-even, the Forrester benchmark and USD/SGD conversion. Also holds constants such as the default exchange rate (1.28) |
 | `copilot_export.py` | Reads a Microsoft Copilot Dashboard data export (CSV), matches Microsoft's metric names, and calculates assisted hours per week, organisation, function and app |
+| `graph_usage.py` | Downloads the Microsoft 365 Copilot usage reports (v2) from Microsoft Graph with an Entra ID app registration, and summarises them. Reads the app's ID and secret from environment variables |
 | `dashboard.py` | Builds the interactive HTML dashboard (Business case, Usage & adoption, Method & sources tabs; sliders, scenarios, currency switch, logo upload) |
 | `deck.py` | Builds the client-facing PowerPoint deck (native charts, clickable agenda, speaker notes, optional template) |
 | `demo.py` | Quick test without an AI app: prints results and builds a sample dashboard and deck in `output/` |
@@ -36,6 +37,7 @@ Created by Shenuka Fernando. © 2026 Shenuka Fernando. All rights reserved.
 | `plan_build_along` | Tool | Build-Along workshop outline |
 | `estimate_roi` | Tool | ROI in USD and SGD using Microsoft's assisted hours method |
 | `summarise_copilot_export` | Tool | Real adoption and activity from a Copilot Dashboard export |
+| `download_copilot_usage` | Tool | Downloads Copilot usage reports from Microsoft Graph to Downloads |
 | `create_roi_dashboard` | Tool | Interactive HTML dashboard |
 | `create_client_deck` | Tool | PowerPoint client deck |
 | `list_logos` | Tool | Saved partner and customer logos |

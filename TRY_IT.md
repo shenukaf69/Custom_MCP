@@ -82,6 +82,17 @@ Estimate Copilot ROI in SGD: 300 users, 70% adoption, 1 meeting hour summarised,
 ![ROI estimate in SGD with the break-even point](docs/screenshots/09-estimate-roi-sgd.png)
 
 
+Download real usage from the client's tenant with Microsoft Graph. This needs the one-off setup in
+[INSTALL.md section H](INSTALL.md#h-automatic-copilot-usage-download-microsoft-graph):
+```
+Download Copilot usage for the last 28 days.
+```
+```
+Download Contoso's Copilot usage for the last 90 days and estimate the ROI in SGD from it: S$92 an hour, S$38.40 per licence, S$50,000 rollout costs, 1 meeting hour and 3 creation actions per user per week.
+```
+The three CSVs go to your Downloads folder. Graph has prompts and adoption but no meeting hours or creation
+actions, so give estimates for those (or use a Copilot Dashboard export).
+
 ### Build: dashboard
 ```
 Create an ROI dashboard for Demo Client using the Copilot export at C:\Users\shenu\Custom_MCP\samples\sample_copilot_export_SYNTHETIC.csv. Currency SGD: hourly cost 92, licence cost per user per month 38.4, one-off costs 50000. Prepared by Shenuka Fernando.
@@ -148,6 +159,10 @@ start output\copilot_deck_Demo_Client.pptx
 
 # Logos
 python -c "import server; print(server.list_logos())"
+
+# Copilot usage from Microsoft Graph (after the setup in INSTALL.md section H)
+python -c "import server; print(server.download_copilot_usage(period='D28'))"
+python -c "import server; print(server.download_copilot_usage(period='D90', tenant_profile='contoso'))"
 ```
 
 Valid values: industry is Financial Services, Healthcare, Retail, Manufacturing, Public Sector, Energy or

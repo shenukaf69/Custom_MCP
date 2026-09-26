@@ -125,7 +125,7 @@ This harness reasons through multi-step tasks and creates Word, Excel and PowerP
 1. Open the agent in Copilot Studio and select the **Build** tab.
 2. In the components panel, select **Tools** > **Add** > **Model Context Protocol (MCP)**.
 3. Enter the same **Name**, **Description**, **Server URL** and **Authentication** as in Step 3, then **Add**.
-4. Check that the 9 tools are listed with clear descriptions, then **Save**.
+4. Check that the 10 tools are listed with clear descriptions, then **Save**.
 5. Test on the **Preview** tab and open the activity trace to see which tool ran.
 
 ([Add an MCP server (GitHub Copilot harness)](https://learn.microsoft.com/microsoft-copilot-studio/agents-experience/tools-add-mcp-server),
@@ -213,6 +213,7 @@ connections, and `--host 127.0.0.1` keeps the server off your network. If outbou
 | Sign in to Dev Tunnels | `login.microsoftonline.com` (Microsoft account) or `github.com` |
 | Dev Tunnels service | `global.rel.tunnels.api.visualstudio.com`, `*.rel.tunnels.api.visualstudio.com`, `*.devtunnels.ms` |
 | Setup and updates | `github.com` (git), `pypi.org` and `files.pythonhosted.org` (pip) |
+| `download_copilot_usage` (optional) | `login.microsoftonline.com`, `graph.microsoft.com` |
 
 **Traffic arriving at your server:**
 
@@ -224,13 +225,14 @@ connections, and `--host 127.0.0.1` keeps the server off your network. If outbou
 
 ### What works offline
 
-The MCP itself needs no internet. Everything below runs on your PC:
+The MCP needs no internet, except for `download_copilot_usage`. Everything below runs on your PC:
 
 | Tool or resource | Offline? | Uses |
 |------------------|----------|------|
 | `assess_readiness`, `recommend_tier`, `find_use_cases`, `plan_build_along` | Yes | Rules and data in `consulting.py` |
 | `estimate_roi` | Yes | Built-in maths and constants in `roi.py` |
 | `summarise_copilot_export` | Yes | The CSV file on your disk |
+| `download_copilot_usage` | **No** | Microsoft Graph (`login.microsoftonline.com`, `graph.microsoft.com`) with the app registration in [INSTALL.md section H](INSTALL.md#h-automatic-copilot-usage-download-microsoft-graph) |
 | `create_roi_dashboard`, `create_client_deck` | Yes | Logos and templates from files or `assets/`; only an `https://` logo link needs internet, to download it |
 | `list_logos`, both resources, the `discovery_call` prompt | Yes | Files and text in the repository |
 | Generated dashboards and decks | Yes | Everything is built into the file; only the source links on the Method tab and slide need internet when clicked |
@@ -242,6 +244,7 @@ These need internet:
 | Your AI app (Claude, ChatGPT, Copilot) | The AI runs in the cloud. **Whatever a tool returns is sent to it**, for example an export summary |
 | Copilot Studio, Cowork, ChatGPT | Cloud services that reach your server over a tunnel or Azure |
 | Getting the Copilot Dashboard export | Downloading it from Viva Insights. Analysing it afterwards is offline |
+| `download_copilot_usage` | Signs in to Microsoft Entra ID and downloads reports from Microsoft Graph |
 | `https://` logos | Downloaded once, when the dashboard or deck is created |
 | Setup and updates | `git clone`/`git pull`, `pip install` |
 

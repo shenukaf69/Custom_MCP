@@ -6,7 +6,8 @@ use-case ideas, ROI estimates, an HTML ROI dashboard and Build-Along
 session plans.
 
 Files: server.py (MCP tools), consulting.py (tiers, readiness, use cases), roi.py (the maths),
-dashboard.py (the HTML), deck.py (the PowerPoint), copilot_export.py (reads a Copilot Dashboard export).
+dashboard.py (the HTML), deck.py (the PowerPoint), copilot_export.py (reads a Copilot Dashboard export),
+graph_usage.py (downloads Copilot usage reports from Microsoft Graph).
 
 Run locally for Claude Desktop:  python server.py
 Run as a web service for Microsoft 365 (Copilot Studio, Cowork, declarative agents):
@@ -18,6 +19,7 @@ Created by Shenuka Fernando. Copyright (c) 2026 Shenuka Fernando. All rights res
 import argparse
 import base64
 import binascii
+import datetime
 import os
 import secrets
 import tempfile
@@ -28,6 +30,7 @@ from mcp.server.mcpserver import MCPServer
 from mcp.types import ToolAnnotations
 from pydantic import Field
 
+import graph_usage
 from dashboard import build_dashboard
 from consulting import (INDUSTRY_NOTES, TIERS, USE_CASES, Currency, Function, Industry, Tier,
                         pick_tier, score_readiness)
@@ -341,6 +344,61 @@ def summarise_copilot_export(csv_path: str | None = None, copilot_export_file: E
     ]
     if u["missing_metrics"]:
         lines.append(f"Missing columns (counted as zero): {', '.join(u['missing_metrics'])}")
+    return "\n".join(lines)
+
+
+@mcp.tool(annotations=ToolAnnotations(title="Download Copilot usage from Microsoft Graph", read_only_hint=False,
+                                      destructive_hint=False, open_world_hint=True))
+def download_copilot_usage(period: graph_usage.Period = "D28", tenant_profile: str = "",
+                           save_to: str = "") -> str:
+    """Download the client's Microsoft 365 Copilot usage reports (v2) from Microsoft Graph as CSV files.
+
+    Uses the Entra ID app registration set up in environment variables (see INSTALL.md); never ask the
+    user for a secret in the chat. Saves three CSVs (user detail, summary, daily trend) to the Downloads
+    folder and returns adoption, prompts and a prompt-based estimate of search/summary actions per week
+    that can go into estimate_roi or create_roi_dashboard as search_actions_per_week. Graph doesn't
+    include meeting hours or creation actions: ask the user for those, or use a Copilot Dashboard export.
+
+    Args:
+        period: D7, D28, D90 or D180 (the last 7, 28, 90 or 180 days).
+        tenant_profile: Optional name of a client set up with its own variables, e.g. "contoso" for
+            COPILOT_GRAPH_TENANT_ID_CONTOSO. Leave empty for the default COPILOT_GRAPH_* variables.
+        save_to: Optional folder to save to (local only). Default: your Downloads folder.
+    """
+    try:
+        cfg = graph_usage.settings(tenant_profile)
+        token = graph_usage.get_token(cfg)
+        reports = {name: graph_usage.fetch_report(name, period, token) for name in graph_usage.REPORTS}
+    except graph_usage.GraphError as err:
+        return f"Error: {err}"
+
+    stamp = datetime.date.today().isoformat()
+    label = tenant_profile or "tenant"
+    folder = Path(save_to).expanduser() if save_to and not HOSTED else Path.home() / "Downloads"
+    saved = []
+    for name, text in reports.items():
+        stem = f"copilot_usage_{label}_{name}_{period}_{stamp}"
+        path = output_path(stem, ".csv") if HOSTED or not folder.is_dir() else folder / f"{stem}.csv"
+        path.write_text(text, encoding="utf-8")
+        saved.append(f"- {name.replace('_', ' ')}: {where(path)}")
+
+    s = graph_usage.summarise(reports["user_detail"], reports["summary"], period)
+    lines = [f"Microsoft 365 Copilot usage, last {s['period_days']} days (Microsoft Graph, report v2)",
+             f"Licensed users: {s['enabled_users']:,}, active: {s['active_users'] or 0:,} ({s['adoption_rate']:.0%})"]
+    if s["prompts"] is not None:
+        lines.append(f"Prompts submitted: {s['prompts']:,.0f} "
+                     f"({s['prompts_per_active_user_per_week']:.1f} per active user per week)")
+        lines.append(f"Prompt-based assisted hours (6 min each, Microsoft method): {s['prompt_assisted_hours']:,.0f}")
+    if "avg_active_days" in s:
+        lines.append(f"Average active days per active user: {s['avg_active_days']:.1f}")
+    if s["apps"]:
+        lines.append("Active / enabled users by app:")
+        lines += [f"  {a['app']}: {a['active']:,} / {a['enabled']:,}" for a in s["apps"]]
+    lines += ["Files:", *saved,
+              f"For ROI: users={s['enabled_users']}, adoption_rate={s['adoption_rate']:.2f}, "
+              f"search_actions_per_week={s['prompts_per_active_user_per_week']:.1f}. "
+              "Graph has no meeting hours or creation actions: ask the user for those estimates, "
+              "or use a Copilot Dashboard export for the exact figures. Licensed users only."]
     return "\n".join(lines)
 
 

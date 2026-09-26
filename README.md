@@ -37,6 +37,7 @@ A beginner-friendly [Model Context Protocol](https://modelcontextprotocol.io) se
 | Tool | `find_use_cases` | Suggests agent use cases by industry and function |
 | Tool | `estimate_roi` | Copilot ROI in text, using Microsoft's assisted-hours method |
 | Tool | `summarise_copilot_export` | Summarises a Copilot Dashboard export and calculates assisted hours |
+| Tool | `download_copilot_usage` | Downloads Microsoft 365 Copilot usage reports (v2) from Microsoft Graph to Downloads (optional setup: [INSTALL.md](INSTALL.md#h-automatic-copilot-usage-download-microsoft-graph)) |
 | Tool | `create_roi_dashboard` | Saves an interactive, branded HTML dashboard to `output/` |
 | Tool | `create_client_deck` | Saves a client-facing PowerPoint deck (native charts, clickable agenda, speaker notes, optional template) |
 | Tool | `list_logos` | Lists the partner and customer logos saved in `assets/` |
@@ -79,6 +80,13 @@ The export has one row per person per week, with anonymised IDs. It doesn't incl
 `copilot_export.py` calculates them from the activity columns using Microsoft's formula. Columns are matched by
 Microsoft's documented metric names. The first time you use a real export, check the list of any missing columns
 that `summarise_copilot_export` reports. Try it with `samples/sample_copilot_export_SYNTHETIC.csv` first.
+
+### Automatic download from Microsoft Graph
+
+The Copilot Dashboard export has no API, but the **Microsoft 365 Copilot usage reports (v2)** do. With an Entra ID
+app registration (`Reports.Read.All`), `download_copilot_usage` saves them to your Downloads folder. You get
+adoption by app, prompts and active days, but not meeting hours or creation actions, so it gives a prompt-based
+**lower-bound** for assisted hours. Setup, and how the secret is kept safe: [INSTALL.md section H](INSTALL.md#h-automatic-copilot-usage-download-microsoft-graph).
 
 ## Currencies: USD and SGD
 
