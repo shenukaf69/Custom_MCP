@@ -53,26 +53,47 @@ A client wants an agent that connects to their CRM, but they have no developers.
 ```
 Suggest Copilot agent use cases for the HR function in Healthcare.
 ```
+![Claude suggesting HR use cases in Healthcare with tiers](docs/screenshots/10-find-use-cases.png)
+
 ```
 Plan a Tier 2 Build-Along for Customer Service in Financial Services.
 ```
+![Claude expanding the Build-Along plan into a 90-minute session](docs/screenshots/11-build-along-plan.png)
+
 ```
 I'm meeting a Retail client's Operations team next week. They have Copilot licences and an exec sponsor, no change plan, DLP in place, SharePoint not reviewed. They want an agent that checks inventory in their ERP and raises supplier requests. Assess readiness, recommend a tier, suggest use cases and plan the Build-Along.
 ```
+Claude calls four tools in one go and writes a meeting brief:
+
+![Meeting brief: readiness and tier](docs/screenshots/12-full-discovery-brief-1.png)
+![Meeting brief: use cases, Build-Along and questions for the meeting](docs/screenshots/13-full-discovery-brief-2.png)
+
 ![Claude recommending a build tier](docs/screenshots/03-recommend-tier.png)
 
 ### Analysis
 ```
 Summarise the Copilot export at C:\Users\shenu\Custom_MCP\samples\sample_copilot_export_SYNTHETIC.csv
 ```
+![Claude summarising the sample export](docs/screenshots/05-summarise-export.png)
+
 ```
 Estimate Copilot ROI in SGD: 300 users, 70% adoption, 1 meeting hour summarised, 10 search actions and 5 creation actions per user per week, hourly cost 92, licence 38.4 per month, one-off costs 50000.
 ```
+![ROI estimate in SGD with the break-even point](docs/screenshots/09-estimate-roi-sgd.png)
+
 
 ### Build: dashboard
 ```
 Create an ROI dashboard for Demo Client using the Copilot export at C:\Users\shenu\Custom_MCP\samples\sample_copilot_export_SYNTHETIC.csv. Currency SGD: hourly cost 92, licence cost per user per month 38.4, one-off costs 50000. Prepared by Shenuka Fernando.
 ```
+The dashboard's three tabs:
+
+![Business case tab](docs/screenshots/06-dashboard-business-case.png)
+![Usage & adoption tab](docs/screenshots/07-dashboard-usage.png)
+![Method & sources tab](docs/screenshots/08-dashboard-method.png)
+
+Always give the hourly cost, licence price and rollout costs. If you leave them out, Claude should ask for them.
+
 
 ### Build: PowerPoint deck
 ```

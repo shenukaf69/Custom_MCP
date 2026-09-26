@@ -257,6 +257,9 @@ def estimate_roi(
 ) -> str:
     """Estimate Copilot ROI using Microsoft's "Copilot assisted hours" method. Shows USD and SGD.
 
+    Before calling, make sure the user has given the hourly cost and licence price (and any rollout
+    costs). If they haven't, ask for them; never assume or invent these values.
+
     Microsoft's method (Copilot Dashboard in Viva Insights): assisted hours =
     meeting hours summarised + 6 minutes per search/summary action + 6 minutes
     per creation action; assisted value = assisted hours x hourly rate.
@@ -363,6 +366,9 @@ def create_roi_dashboard(
     copilot_export_file: ExportFile = "",
 ) -> str:
     """Create an interactive, multi-tab HTML Copilot ROI dashboard and return where it was saved.
+
+    Before calling, make sure the user has given the hourly cost and licence price (and any rollout
+    costs). If they haven't, ask for them; never assume or invent these values.
 
     Tabs: Business case (live ROI with sliders, scenarios and time horizon), Usage & adoption
     (real data when a Copilot Dashboard export is given, filterable by organisation and job
@@ -504,6 +510,7 @@ def create_client_deck(
     - Recommended approach: the four tier answers (same as recommend_tier) and/or industry + function.
     - Business case + value over time: hourly_cost and licence cost, plus copilot_export_csv or
       users and the three weekly activity numbers (same as estimate_roi).
+      Ask the user for hourly cost, licence price and rollout costs; never assume them.
     - Usage and adoption by organisation: copilot_export_csv.
     - Build-Along plan: tier answers + industry + function.
     Charts are native and editable in PowerPoint (Edit Data), the agenda links to each section,
