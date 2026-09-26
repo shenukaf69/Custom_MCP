@@ -4,7 +4,14 @@
 
 > Independent personal project by Shenuka INC. Not an official Microsoft product, and not endorsed by Microsoft.
 
-**New here?** See **[TRY_IT.md](TRY_IT.md)** for setup, prompts and commands to try every tool, with screenshots.
+## Documentation
+
+| Guide | Read it to… |
+|-------|-------------|
+| **[INSTALL.md](INSTALL.md)** | Install in Claude Desktop, Claude Code, OpenAI Codex, ChatGPT, Copilot Studio, Copilot Cowork or Microsoft 365 Copilot |
+| **[TRY_IT.md](TRY_IT.md)** | Try every tool with ready-made prompts and commands, with screenshots |
+| **[DEPLOYMENT.md](DEPLOYMENT.md)** | Host it (Dev Tunnels or Azure) for Microsoft 365 and ChatGPT; networking and offline use |
+| **[FILES.md](FILES.md)** | Find out what every file and folder is for |
 
 A beginner-friendly [Model Context Protocol](https://modelcontextprotocol.io) server that gives an AI assistant tools a Microsoft Copilot consultant uses with clients. It has no API keys or databases.
 
@@ -175,17 +182,6 @@ This summarises the sample export, prints an ROI estimate and opens a sample das
 mcp dev server.py
 ```
 
-## Connect to Claude Desktop
+## Install in Claude Desktop, ChatGPT, Copilot Studio or Cowork
 
-In Claude Desktop open **Settings > Developer > Edit Config**, add this (with your own path), then fully quit and reopen Claude:
-
-```json
-{
-  "mcpServers": {
-    "copilot-consultant": {
-      "command": "C:\\Users\\you\\Custom_MCP\\.venv\\Scripts\\python.exe",
-      "args": ["C:\\Users\\you\\Custom_MCP\\server.py"]
-    }
-  }
-}
-```
+See **[INSTALL.md](INSTALL.md)** for step-by-step instructions for each app.

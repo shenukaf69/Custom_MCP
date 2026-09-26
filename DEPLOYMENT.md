@@ -12,6 +12,10 @@ using the **Streamable HTTP** transport. This guide covers that first, then each
 | Copilot Studio, GitHub Copilot harness | Yes (preview) | Build tab > Tools > Add > Model Context Protocol (MCP) | Per the add-server page |
 | Copilot Cowork | Yes, as a plugin | Upload a plugin package in the Microsoft 365 admin center | None, OAuth (API keys aren't supported in Cowork yet) |
 | Agent Builder in Microsoft 365 Copilot | **No** (no way to add an MCP server) | Use a declarative agent from Agents Toolkit, or a Copilot Studio agent published to Microsoft 365 Copilot | None, OAuth, Entra SSO |
+| ChatGPT (web and desktop app) | Yes, in Developer mode | See [INSTALL.md](INSTALL.md#d-chatgpt-web-and-desktop-app) | None, OAuth (no API keys) |
+
+To install in Claude Desktop, Claude Code or the OpenAI Codex app (which run the server on your PC), see
+[INSTALL.md](INSTALL.md).
 
 Microsoft's docs are linked in each section; features marked preview can change.
 
@@ -40,14 +44,30 @@ with a link can download it, so share links only with the right people.
 
 ### Option A: quick test with Dev Tunnels (your PC stays on)
 
+Window 1, the server (listening only on your laptop):
+```powershell
+cd C:\Users\<you>\Custom_MCP
+.venv\Scripts\Activate.ps1
+$env:MCP_API_KEY = "a-long-random-key"     # for Copilot Studio; leave out for Cowork and ChatGPT
+python server.py --http --host 127.0.0.1
+```
+
+Window 2, the tunnel:
 ```powershell
 winget install Microsoft.devtunnel
 devtunnel user login
 devtunnel host -p 8000 --allow-anonymous
 ```
 
-Use the `https://…devtunnels.ms` address it prints. Set `PUBLIC_BASE_URL` to it and restart the server so
-download links work. Good for demos only: the tunnel is open to anyone with the address.
+It prints an address like `https://abc123-8000.asse.devtunnels.ms`. **Your MCP URL is that address plus `/mcp`.**
+Set it for download links, then restart the server in window 1:
+```powershell
+$env:PUBLIC_BASE_URL = "https://abc123-8000.asse.devtunnels.ms"
+```
+
+The URL only works while your laptop is on and both windows are running. `--allow-anonymous` is needed because
+Microsoft's and OpenAI's clouds can't sign in to your tunnel, so anyone with the address can reach it: use
+`MCP_API_KEY` where the app supports it, and only sample data otherwise. Good for demos, not production.
 ([Dev tunnels](https://learn.microsoft.com/azure/developer/dev-tunnels/overview))
 
 ### Option B: Azure Container Apps (recommended)
@@ -168,6 +188,66 @@ and choose **OAuth 2.0** in Copilot Studio (or `--auth oauth --reference-id <id>
 This needs your Azure and Microsoft 365 admins; test it in a development tenant first.
 
 ---
+
+## Networking and offline use
+
+### Where the server is reachable
+
+| How you run it | URL | Who can reach it |
+|----------------|-----|------------------|
+| Claude Desktop, Claude Code, Codex (STDIO) | None: the app starts `server.py` itself | Only that app |
+| `python server.py --http --host 127.0.0.1` | `http://localhost:8000/mcp` | Only apps on your laptop |
+| Dev Tunnel | `https://<tunnel>.devtunnels.ms/mcp` | Anyone with the address (use an API key or sample data) |
+| Azure Container Apps | `https://<app>.<region>.azurecontainerapps.io/mcp` | Anyone with the address; protect with an API key or OAuth |
+
+Copilot Studio, Copilot Cowork and ChatGPT run in the cloud, so they can't use `localhost`.
+
+### Networks to allow
+
+**Your laptop (with a Dev Tunnel)** needs **no inbound ports**. The tunnel only makes outbound HTTPS (443)
+connections, and `--host 127.0.0.1` keeps the server off your network. If outbound traffic is restricted, allow
+([Dev Tunnels security](https://learn.microsoft.com/azure/developer/dev-tunnels/security)):
+
+| Purpose | Domains (HTTPS 443) |
+|---------|---------------------|
+| Sign in to Dev Tunnels | `login.microsoftonline.com` (Microsoft account) or `github.com` |
+| Dev Tunnels service | `global.rel.tunnels.api.visualstudio.com`, `*.rel.tunnels.api.visualstudio.com`, `*.devtunnels.ms` |
+| Setup and updates | `github.com` (git), `pypi.org` and `files.pythonhosted.org` (pip) |
+
+**Traffic arriving at your server:**
+
+| Caller | Comes from | Can you restrict it by IP? |
+|--------|------------|----------------------------|
+| Copilot Studio | Microsoft's cloud, through Power Platform connectors | Yes: allow the Power Platform connector outbound addresses for your region (Azure service tag `AzureConnectors`). See [connector IP addresses](https://learn.microsoft.com/power-automate/ip-address-configuration#connectors) |
+| Copilot Cowork | Microsoft's cloud | Not reliably: no fixed IP list is published. Cowork identifies itself as `copilot-cowork`, but that can be faked, so rely on authentication |
+| ChatGPT | OpenAI's cloud | Use authentication, or OpenAI's Secure MCP Tunnel |
+
+### What works offline
+
+The MCP itself needs no internet. Everything below runs on your PC:
+
+| Tool or resource | Offline? | Uses |
+|------------------|----------|------|
+| `assess_readiness`, `recommend_tier`, `find_use_cases`, `plan_build_along` | Yes | Rules and data in `consulting.py` |
+| `estimate_roi` | Yes | Built-in maths and constants in `roi.py` |
+| `summarise_copilot_export` | Yes | The CSV file on your disk |
+| `create_roi_dashboard`, `create_client_deck` | Yes | Logos and templates from files or `assets/`; only an `https://` logo link needs internet, to download it |
+| `list_logos`, both resources, the `discovery_call` prompt | Yes | Files and text in the repository |
+| Generated dashboards and decks | Yes | Everything is built into the file; only the source links on the Method tab and slide need internet when clicked |
+
+These need internet:
+
+| What | Why |
+|------|-----|
+| Your AI app (Claude, ChatGPT, Copilot) | The AI runs in the cloud. **Whatever a tool returns is sent to it**, for example an export summary |
+| Copilot Studio, Cowork, ChatGPT | Cloud services that reach your server over a tunnel or Azure |
+| Getting the Copilot Dashboard export | Downloading it from Viva Insights. Analysing it afterwards is offline |
+| `https://` logos | Downloaded once, when the dashboard or deck is created |
+| Setup and updates | `git clone`/`git pull`, `pip install` |
+
+**Fixed values that don't update themselves:** the exchange rate (1.28 SGD per USD), Microsoft's assisted-hours
+factors, the Forrester benchmark and the use-case library are in the code. The MCP never looks them up online, so
+update `roi.py` and `consulting.py` when they change.
 
 ## What works where
 
