@@ -180,97 +180,78 @@ assisted-hours ROI, so use a Copilot Dashboard export for exact figures or give 
 people without a Copilot licence isn't in Graph either. The tool gives a **lower-bound** figure: prompts × 6 minutes,
 which is how Microsoft counts Copilot Chat prompts.
 
+**How it signs in:** an **admin signs in in the browser** with their own work account and MFA each time Claude
+starts, or before every download if you choose. **No secret is stored anywhere.** Only people with an admin reports
+role can download, and you can restrict it further to named people. The client-secret method is still available
+for a hosted server or unattended use ([further down](#hosted-or-unattended-use-client-secret)).
+
 ### 1. Register an app in the client's tenant (an admin does this once)
 
 A **Global Administrator** or **Privileged Role Administrator** is needed to grant the consent.
 
 1. Go to the [Microsoft Entra admin center](https://entra.microsoft.com) > **Entra ID** > **App registrations** >
    **New registration**.
-2. Name: `Copilot Consultant MCP - usage reports`. Account type: **this organisational directory only**. Leave
-   **Redirect URI** empty. Select **Register**.
-3. On **Overview**, copy the **Application (client) ID** and the **Directory (tenant) ID**.
-4. **API permissions** > **Add a permission** > **Microsoft Graph** > **Application permissions** >
+2. Name: `Copilot Consultant MCP - usage reports`. Account type: **this organisational directory only**.
+   Under **Redirect URI**, choose **Public client/native (mobile & desktop)** and enter `http://localhost`.
+   Select **Register**. (To add it later, go to **Authentication** > **Add a platform** > **Mobile and desktop
+   applications** and enter `http://localhost` as a custom redirect URI.)
+3. On **Overview**, copy the **Application (client) ID** and the **Directory (tenant) ID**. These aren't secrets.
+4. **API permissions** > **Add a permission** > **Microsoft Graph** > **Delegated permissions** >
    **Reports.Read.All** > **Add permissions**. Then select **Grant admin consent for <tenant>**. The status must
    show a green tick.
-5. **Certificates & secrets** > **Client secrets** > **New client secret**. Pick a short expiry (for example
-   6 months) and copy the **Value** straight away. It's only shown once. Copy the Value, not the Secret ID.
+5. **No client secret is needed.** Skip **Certificates & secrets**.
+6. **Recommended: allow only named people.** Go to **Enterprise applications** > the app > **Properties** and set
+   **Assignment required?** to **Yes**, then **Save**. Under **Users and groups** > **Add user/group**, add the
+   admins who may use it. (Assigning groups needs Microsoft Entra ID P1 or P2; assigning individual users doesn't.)
 
-`Reports.Read.All` lets the app read Microsoft 365 **usage reports** only. It can't read anyone's mail, files,
-chats or calendars. See [Microsoft's permission reference](https://learn.microsoft.com/graph/permissions-reference#reportsreadall).
+**Who can download:** Microsoft only returns usage reports to someone who signs in with one of these roles:
+**Reports Reader** (the least privilege, and the one to ask for), AI Administrator, Global Administrator,
+Exchange Administrator, SharePoint Administrator, Teams Administrator or Teams Communications Administrator.
+Anyone else gets "access refused", even after signing in.
 
-If the client's admin creates the app, ask them to share the secret through a password manager or a secure share,
-**never by email or chat**.
+`Reports.Read.All` reads Microsoft 365 **usage reports** only. It can't read anyone's mail, files, chats or
+calendars. See [Microsoft's permission reference](https://learn.microsoft.com/graph/permissions-reference#reportsreadall).
 
-### 2. Store the details on your PC
+### 2. Tell the MCP which tenant and app (on your PC)
 
-The MCP reads three **environment variables**. You never type the secret into the chat.
+Two **environment variables**. Neither is a secret:
 
 | Variable | Value |
 |----------|-------|
 | `COPILOT_GRAPH_TENANT_ID` | Directory (tenant) ID, or the domain, e.g. `contoso.onmicrosoft.com` |
 | `COPILOT_GRAPH_CLIENT_ID` | Application (client) ID |
-| `COPILOT_GRAPH_CLIENT_SECRET` | The client secret **Value** |
+| `COPILOT_GRAPH_SIGNIN` (optional) | `session` (default): sign in once, then it's remembered until Claude closes. `every-time`: sign in before every download |
 
-**Recommended: Windows user environment variables.** Only your Windows account can read them, and nothing is saved
-in the repository or the Claude config file. In PowerShell (the secret prompt hides what you type, so it doesn't
-end up in your command history):
+In PowerShell (no "Run as administrator" needed):
 
 ```powershell
 [Environment]::SetEnvironmentVariable("COPILOT_GRAPH_TENANT_ID", "contoso.onmicrosoft.com", "User")
 [Environment]::SetEnvironmentVariable("COPILOT_GRAPH_CLIENT_ID", "<application-client-id>", "User")
-$secret = Read-Host "Client secret" -MaskInput
-[Environment]::SetEnvironmentVariable("COPILOT_GRAPH_CLIENT_SECRET", $secret, "User")
-Remove-Variable secret
+# Optional: sign in before every download
+[Environment]::SetEnvironmentVariable("COPILOT_GRAPH_SIGNIN", "every-time", "User")
 ```
 
-Then **fully quit Claude Desktop** (tray icon > Quit) and reopen it, so it picks up the new variables.
-
-**No local admin rights needed.** These are *user* variables (the `"User"` part), stored in your own profile, so
-Windows doesn't ask for admin rights. Only `"Machine"` variables need them, and the MCP doesn't use those.
-Claude Desktop runs as you, so it can read them and passes them on to the MCP.
-
-Without PowerShell: search the Start menu for **Edit environment variables for your account**, then under
-**User variables** select **New** for each variable. This doesn't need admin rights either.
-
-Check they're set without showing the secret (each line should print `True`):
+Then update the libraries and **fully quit Claude Desktop** (tray icon > Quit) and reopen it:
 
 ```powershell
-"COPILOT_GRAPH_TENANT_ID", "COPILOT_GRAPH_CLIENT_ID", "COPILOT_GRAPH_CLIENT_SECRET" |
+cd C:\Users\<you>\Custom_MCP
+.venv\Scripts\Activate.ps1
+git pull
+pip install -r requirements.txt
+```
+
+**No local admin rights needed.** These are *user* variables (the `"User"` part), stored in your own profile, so
+Windows doesn't ask for admin rights. Without PowerShell: search the Start menu for **Edit environment variables
+for your account** and select **New** under **User variables**. Check they're set (each line should print `True`):
+
+```powershell
+"COPILOT_GRAPH_TENANT_ID", "COPILOT_GRAPH_CLIENT_ID" |
   ForEach-Object { "$_ : " + [bool][Environment]::GetEnvironmentVariable($_, "User") }
 ```
 
-The only admin involved is the client's **Microsoft Entra** admin, who creates the app registration and grants
-consent in step 1. That's a cloud role in the client's tenant, not admin rights on your laptop.
-
-**Alternative: the Claude Desktop config.** Add an `env` block to the server entry. It works, but the secret is
-then stored as plain text in `claude_desktop_config.json`, so don't share or back up that file anywhere public:
-
-```json
-"copilot-consultant": {
-  "command": "C:\\Users\\<you>\\Custom_MCP\\.venv\\Scripts\\python.exe",
-  "args": ["C:\\Users\\<you>\\Custom_MCP\\server.py"],
-  "env": {
-    "COPILOT_GRAPH_TENANT_ID": "contoso.onmicrosoft.com",
-    "COPILOT_GRAPH_CLIENT_ID": "<application-client-id>",
-    "COPILOT_GRAPH_CLIENT_SECRET": "<secret-value>"
-  }
-}
-```
-
-**Several clients:** add the client's name to the end of each variable name, e.g. `COPILOT_GRAPH_TENANT_ID_CONTOSO`,
-`COPILOT_GRAPH_CLIENT_ID_CONTOSO` and `COPILOT_GRAPH_CLIENT_SECRET_CONTOSO`. Then say *"for Contoso"* in the prompt
-(the tool's `tenant_profile` is `contoso`). The files are named after the profile.
-
-**Hosted server (Azure Container Apps):** keep the secret as a Container Apps secret, not a plain environment variable:
-
-```powershell
-az containerapp secret set -n copilot-consultant -g rg-copilot-consultant --secrets graph-secret=<secret-value>
-az containerapp update -n copilot-consultant -g rg-copilot-consultant --set-env-vars `
-  COPILOT_GRAPH_TENANT_ID=<tenant-id> COPILOT_GRAPH_CLIENT_ID=<client-id> COPILOT_GRAPH_CLIENT_SECRET=secretref:graph-secret
-```
-
-Hosted, the files come back as download links instead of going to Downloads. Protect the server with an API key or
-OAuth ([DEPLOYMENT.md](DEPLOYMENT.md)), because anyone who can call it can download that tenant's usage reports.
+**Several clients:** add the client's name to the end of each variable, e.g. `COPILOT_GRAPH_TENANT_ID_CONTOSO` and
+`COPILOT_GRAPH_CLIENT_ID_CONTOSO`, then say *"for Contoso"* in the prompt (the tool's `tenant_profile` is
+`contoso`). Each client's sign-in is kept separately, and the files are named after the profile.
 
 ### 3. Try it
 
@@ -281,21 +262,28 @@ Download Copilot usage for the last 28 days.
 Download Contoso's Copilot usage for the last 90 days, then create an ROI dashboard for Contoso in SGD using those numbers: S$92 an hour, S$38.40 per licence, S$50,000 rollout costs, 1 meeting hour and 3 creation actions per user per week.
 ```
 
-### How the MCP uses the secret
+A Microsoft sign-in page opens in your browser. Sign in with the admin account and complete MFA. The download
+continues on its own. If sign-in takes more than about 40 seconds, Claude says the sign-in page is still open:
+finish signing in, then say *"done, try again"*.
 
-1. When the tool runs, `graph_usage.py` reads the three variables from the environment that Claude Desktop (or the
-   server host) started `server.py` with.
-2. It sends the client ID and secret over HTTPS to `login.microsoftonline.com/<tenant>` (the OAuth 2.0
-   **client credentials** flow) and gets back an **access token** that's valid for about an hour.
-3. It calls `graph.microsoft.com/v1.0/copilot/reports/...` with that token. When Graph redirects to the file
-   download, the token isn't sent on to the download address.
-4. The token is kept **in memory only** and reused for about an hour. It's forgotten when the app closes.
-5. The secret and the token are **never** written to disk, logged, put in the files, or returned to the AI. The AI
-   only sees the summary and the file paths. The per-user CSVs stay on your PC.
+### How sign-in works
 
-**Housekeeping:** set a reminder before the secret expires, then create a new one and update the variable. Delete
-the app registration (or its secret) when the engagement ends. Sign-in and usage show in the client's Entra
-**sign-in logs** under the app's name.
+1. When the tool runs, `graph_usage.py` reads the tenant and app IDs from the environment variables.
+2. It opens the **Microsoft sign-in page** in your browser, using Microsoft's own library (MSAL). You sign in on
+   Microsoft's page, so the MCP and Claude never see your password or MFA code.
+3. Entra checks your account, MFA and the client's Conditional Access policies, and whether you're assigned to
+   the app (if step 1.6 is on). It then returns an **access token** to the MCP through `http://localhost` on
+   your PC.
+4. The MCP calls `graph.microsoft.com/v1.0/copilot/reports/...` with the token. Graph checks your **admin role**
+   before returning the reports. When Graph redirects to the file download, the token isn't sent on.
+5. The token is kept **in memory only**. With `session`, it's reused (and quietly renewed) until Claude closes.
+   With `every-time`, it's discarded straight after each download.
+6. Nothing is written to disk except the three CSVs. The token is never logged or returned to the AI; Claude only
+   sees the summary and the file paths.
+
+**Audit trail:** each download shows in the client's Entra **sign-in logs** under **your name** and the app's
+name. **Turning it off:** the client's admin disables or deletes the app, or removes you from **Users and
+groups**. Delete the app registration when the engagement ends.
 
 **Names in the files:** by default Microsoft 365 hides user names in reports and shows scrambled IDs. The totals are
 the same either way. An admin can change this in **Microsoft 365 admin center > Settings > Org settings > Reports**.
@@ -308,9 +296,37 @@ download to another Microsoft address, so if a proxy blocks it, the error names 
 | Message | Fix |
 |---------|-----|
 | Not set up yet: set the environment variable(s) … | Set the variables named in the message, then fully restart Claude |
-| Sign-in failed (401) … Invalid client secret | You copied the Secret ID instead of the Value, or the secret has expired |
-| Sign-in failed (400) … not found in the directory | Wrong tenant ID, or the app was created in a different tenant |
-| Microsoft Graph refused access (403) | `Reports.Read.All` is missing, is a delegated permission instead of an application permission, or admin consent wasn't granted |
+| The sign-in library is missing | Run `pip install -r requirements.txt` in the `.venv`, then restart Claude |
+| AADSTS50011 (redirect URI mismatch) | Add `http://localhost` under **Authentication > Mobile and desktop applications** (step 1.2) |
+| AADSTS50105 (not assigned to the app) | Assignment is required and your account isn't added under **Users and groups** (step 1.6) |
+| AADSTS65001 (consent) | Admin consent wasn't granted for the delegated `Reports.Read.All` permission |
+| Microsoft Graph refused access (403) | Your account doesn't have an admin reports role (e.g. Reports Reader), or the permission is an application permission instead of delegated |
+
+### Hosted or unattended use (client secret)
+
+A hosted server (Copilot Studio, Cowork) can't open a browser on your PC, so it signs in **as the app** with a
+client secret instead. There's no per-person check, so protect the server with an API key or OAuth
+([DEPLOYMENT.md](DEPLOYMENT.md)): anyone who can call it can download that tenant's usage reports.
+
+1. In the app registration, add **Application permissions** > **Reports.Read.All** and grant admin consent.
+2. **Certificates & secrets** > **New client secret**. Choose a short expiry and copy the **Value** (not the
+   Secret ID). It's only shown once, so share it through a password manager, never by email or chat.
+3. Store it as a Container Apps secret and switch the tool to secret mode:
+
+```powershell
+az containerapp secret set -n copilot-consultant -g rg-copilot-consultant --secrets graph-secret=<secret-value>
+az containerapp update -n copilot-consultant -g rg-copilot-consultant --set-env-vars `
+  COPILOT_GRAPH_TENANT_ID=<tenant-id> COPILOT_GRAPH_CLIENT_ID=<client-id> `
+  COPILOT_GRAPH_AUTH=secret COPILOT_GRAPH_CLIENT_SECRET=secretref:graph-secret
+```
+
+Hosted, secret mode is the default, and the files come back as download links. On your PC you can also use secret
+mode for unattended runs: set `COPILOT_GRAPH_AUTH` to `secret` and `COPILOT_GRAPH_CLIENT_SECRET` as user
+variables (`Read-Host "Client secret" -MaskInput` keeps it out of your PowerShell history). The secret is then
+stored as plain text in your Windows profile (`HKEY_CURRENT_USER\Environment`), readable by anything that runs as
+you. The MCP sends it only to `login.microsoftonline.com` to get a one-hour token (the OAuth client credentials
+flow), and never logs it or returns it to the AI. Set a reminder to renew it before it expires.
 
 ([Copilot usage report API](https://learn.microsoft.com/microsoft-365/copilot/extensibility/api/admin-settings/reports/copilotreportroot-getmicrosoft365copilotusageuserdetail),
+[MSAL Python interactive sign-in](https://learn.microsoft.com/entra/msal/python/),
 [client credentials flow](https://learn.microsoft.com/entra/identity-platform/v2-oauth2-client-creds-grant-flow))

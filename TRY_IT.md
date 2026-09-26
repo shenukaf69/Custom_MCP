@@ -90,7 +90,8 @@ Download Copilot usage for the last 28 days.
 ```
 Download Contoso's Copilot usage for the last 90 days and estimate the ROI in SGD from it: S$92 an hour, S$38.40 per licence, S$50,000 rollout costs, 1 meeting hour and 3 creation actions per user per week.
 ```
-The three CSVs go to your Downloads folder. Graph has prompts and adoption but no meeting hours or creation
+A Microsoft sign-in page opens: sign in with an admin account (e.g. Reports Reader). The three CSVs go to your
+Downloads folder. Graph has prompts and adoption but no meeting hours or creation
 actions, so give estimates for those (or use a Copilot Dashboard export).
 
 ### Build: dashboard

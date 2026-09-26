@@ -21,11 +21,11 @@ Created by Shenuka Fernando. © 2026 Shenuka Fernando. All rights reserved.
 | `consulting.py` | Consulting knowledge: the three build tiers, the use-case library by function, industry tips, readiness scoring rules and the tier-recommendation rules. Edit this to change your playbook |
 | `roi.py` | The ROI maths: Microsoft's Copilot assisted hours method, value, cost, ROI, payback, break-even, the Forrester benchmark and USD/SGD conversion. Also holds constants such as the default exchange rate (1.28) |
 | `copilot_export.py` | Reads a Microsoft Copilot Dashboard data export (CSV), matches Microsoft's metric names, and calculates assisted hours per week, organisation, function and app |
-| `graph_usage.py` | Downloads the Microsoft 365 Copilot usage reports (v2) from Microsoft Graph with an Entra ID app registration, and summarises them. Reads the app's ID and secret from environment variables |
+| `graph_usage.py` | Downloads the Microsoft 365 Copilot usage reports (v2) from Microsoft Graph with an Entra ID app registration, and summarises them. An admin signs in in the browser (MSAL, delegated permission, no stored secret); a client secret is used only on a hosted server |
 | `dashboard.py` | Builds the interactive HTML dashboard (Business case, Usage & adoption, Method & sources tabs; sliders, scenarios, currency switch, logo upload) |
 | `deck.py` | Builds the client-facing PowerPoint deck (native charts, clickable agenda, speaker notes, optional template) |
 | `demo.py` | Quick test without an AI app: prints results and builds a sample dashboard and deck in `output/` |
-| `requirements.txt` | Python libraries to install: `mcp[cli]` (the MCP SDK) and `python-pptx` (PowerPoint) |
+| `requirements.txt` | Python libraries to install: `mcp[cli]` (the MCP SDK), `python-pptx` (PowerPoint) and `msal` (Microsoft sign-in) |
 
 ## Tools, resources and prompts (defined in `server.py`)
 

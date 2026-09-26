@@ -83,10 +83,11 @@ that `summarise_copilot_export` reports. Try it with `samples/sample_copilot_exp
 
 ### Automatic download from Microsoft Graph
 
-The Copilot Dashboard export has no API, but the **Microsoft 365 Copilot usage reports (v2)** do. With an Entra ID
-app registration (`Reports.Read.All`), `download_copilot_usage` saves them to your Downloads folder. You get
+The Copilot Dashboard export has no API, but the **Microsoft 365 Copilot usage reports (v2)** do. An admin signs in
+in the browser (their own account and MFA, no stored secret) and `download_copilot_usage` saves them to your
+Downloads folder. You get
 adoption by app, prompts and active days, but not meeting hours or creation actions, so it gives a prompt-based
-**lower-bound** for assisted hours. Setup, and how the secret is kept safe: [INSTALL.md section H](INSTALL.md#h-automatic-copilot-usage-download-microsoft-graph).
+**lower-bound** for assisted hours. Setup, and how sign-in works: [INSTALL.md section H](INSTALL.md#h-automatic-copilot-usage-download-microsoft-graph).
 
 ## Currencies: USD and SGD
 
