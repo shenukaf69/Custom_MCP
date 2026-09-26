@@ -1,0 +1,6 @@
+.git
+.venv
+output
+__pycache__
+*.pyc
+m365/cowork-plugin/dist

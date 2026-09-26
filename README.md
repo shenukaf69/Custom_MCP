@@ -8,11 +8,15 @@ A beginner-friendly [Model Context Protocol](https://modelcontextprotocol.io) se
 
 | File | Job |
 |------|-----|
-| `server.py` | The MCP tools, resources and prompt, plus the default partner branding |
+| `server.py` | The MCP tools, resources and prompt, default partner branding, and web-service mode |
+| `consulting.py` | Tiers, readiness scoring and use cases, shared by the tools and the deck |
 | `roi.py` | The ROI maths, using Microsoft's "Copilot assisted hours" method |
 | `copilot_export.py` | Reads a Microsoft Copilot Dashboard data export (CSV) |
 | `dashboard.py` | Builds the interactive, multi-tab HTML dashboard |
-| `assets/` | Partner logos (`partners/`, default Shenuka INC) and customer logos (`customers/`) |
+| `deck.py` | Builds the client-facing PowerPoint deck |
+| `m365/cowork-plugin/` | Copilot Cowork plugin: skill, icons and package builder |
+| `Dockerfile`, `DEPLOYMENT.md` | Running in Azure and using it in Copilot Studio, Cowork and Microsoft 365 Copilot |
+| `assets/` | Partner logos (`partners/`), customer logos (`customers/`) and PowerPoint templates (`templates/`) |
 | `samples/` | Synthetic Copilot Dashboard export for testing |
 
 | Type | Name | What it does |
@@ -23,6 +27,7 @@ A beginner-friendly [Model Context Protocol](https://modelcontextprotocol.io) se
 | Tool | `estimate_roi` | Copilot ROI in text, using Microsoft's assisted-hours method |
 | Tool | `summarise_copilot_export` | Summarises a Copilot Dashboard export and calculates assisted hours |
 | Tool | `create_roi_dashboard` | Saves an interactive, branded HTML dashboard to `output/` |
+| Tool | `create_client_deck` | Saves a client-facing PowerPoint deck (native charts, clickable agenda, speaker notes, optional template) |
 | Tool | `list_logos` | Lists the partner and customer logos saved in `assets/` |
 | Tool | `plan_build_along` | Outlines an Agent Build-Along session |
 | Resource | `consultant://tiers` | Overview of the three build tiers |
@@ -85,6 +90,38 @@ logo is embedded in the file.
 
 ![Business case tab](images/dashboard-business-case.png)
 ![Usage and adoption tab](images/dashboard-usage.png)
+
+## Client deck (PowerPoint)
+
+`create_client_deck` turns the results into a deck you can present or send. It adds each section only when
+you've given its inputs:
+
+| Section | Inputs |
+|---------|--------|
+| Readiness score and recommended path | The five readiness answers |
+| Recommended approach and agent ideas | The four tier answers and/or industry + function |
+| Business case and value over time | Hourly cost, licence cost, and a Copilot Dashboard export or users + weekly activity |
+| Copilot usage and adoption by organisation | A Copilot Dashboard export |
+| Build-Along plan | Tier answers + industry + function |
+
+Every chart is a native PowerPoint chart (select it and choose **Edit Data** to change the numbers), the agenda
+links to each section, every slide links back to the agenda, and each slide has speaker notes. It opens in
+Microsoft PowerPoint and PowerPoint for the web. Customer and partner logos must be PNG or JPG for PowerPoint.
+
+**Your own template:** give `template` a widescreen `.pptx`/`.potx` path, or save it in `assets/templates/` and
+use its name. The deck uses the template's masters, backgrounds, title slide layout and theme colours.
+
+Example request:
+
+> Create a client deck for Contoso in SGD with the export at C:\Users\me\Downloads\export.csv: S$92 an hour,
+> S$38.40 per licence, S$50,000 rollout costs. Readiness: licences yes, DLP no, SharePoint reviewed no, sponsor
+> yes, change plan yes. Retail, Operations. Use my template C:\Users\me\Templates\brand.pptx.
+
+## Using it in Microsoft 365 (Copilot Studio, Cowork, Microsoft 365 Copilot)
+
+Run it as a web service with `python server.py --http` and host it with a public HTTPS address. Step-by-step
+instructions for Azure, the Copilot Studio standard and GitHub Copilot harnesses, Copilot Cowork and
+declarative agents are in **[DEPLOYMENT.md](DEPLOYMENT.md)**.
 
 ## Logos
 

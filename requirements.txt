@@ -1,1 +1,2 @@
 mcp[cli]>=2
+python-pptx>=1.0

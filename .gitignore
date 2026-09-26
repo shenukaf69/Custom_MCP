@@ -1,3 +1,5 @@
 output/
 __pycache__/
 .venv/
+m365/cowork-plugin/dist/
+m365/cowork-plugin/manifest.json
