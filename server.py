@@ -723,6 +723,9 @@ def copilot_export_guide() -> str:
         "2. Select Export data > Export by week (last 6 months, includes meeting hours).\n"
         "3. Save the CSV and pass its path to summarise_copilot_export or create_roi_dashboard.\n"
         "Requires at least 50 Copilot or Viva Insights licences. Personal identifiers are anonymised.\n"
+        "Automatic alternative: download_copilot_usage gets the Microsoft 365 Copilot usage reports (v2) from "
+        "Microsoft Graph (adoption, prompts, active days; no meeting hours or creation actions). "
+        "It needs an Entra ID app with Reports.Read.All, set up in environment variables (INSTALL.md section H).\n"
         "Docs: https://learn.microsoft.com/viva/insights/org-team-insights/export-copilot-metrics"
     )
 

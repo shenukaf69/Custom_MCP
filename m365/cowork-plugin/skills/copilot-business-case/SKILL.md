@@ -3,7 +3,8 @@ name: copilot-business-case
 description: |
   Builds a Microsoft 365 Copilot readiness assessment, ROI business case and client deck.
   Use when the user asks to "assess Copilot readiness", "build a Copilot business case",
-  "calculate Copilot ROI", "analyse our Copilot Dashboard export", "which tier should we use",
+  "calculate Copilot ROI", "analyse our Copilot Dashboard export", "download our Copilot usage",
+  "which tier should we use",
   "make a client deck", or "create a Copilot ROI dashboard".
 metadata:
   author: Shenuka Fernando
@@ -24,6 +25,8 @@ Guides a consultant from discovery to a client-ready deck, using the Copilot Con
    If the industry and function are known, call `find_use_cases`.
 3. **Usage data.** If the user attached a Copilot Dashboard export (CSV from Copilot Dashboard >
    Export data > Export by week), call `summarise_copilot_export` with the attached file.
+   If there's no export and the server is set up for Microsoft Graph, call `download_copilot_usage`
+   for adoption and prompts. Graph has no meeting hours or creation actions, so ask for those.
 4. **Business case.** Ask for the hourly cost, licence cost per user per month, one-off rollout
    costs and currency (USD or SGD). With an export, call `estimate_roi` using the export's numbers;
    without one, ask for users, adoption and weekly Copilot activity per active user.
@@ -36,5 +39,6 @@ Guides a consultant from discovery to a client-ready deck, using the Copilot Con
 ## Rules
 
 - Never invent licence prices or activity numbers. Ask, or use the export.
+- Never ask for an app secret or password in the chat. Graph access is set up on the server.
 - Say that Copilot assisted hours is Microsoft's directional estimate, not a guaranteed saving.
 - Use the client's currency: USD or SGD.
