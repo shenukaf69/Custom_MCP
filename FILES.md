@@ -61,7 +61,7 @@ Created by Shenuka Fernando. © 2026 Shenuka Fernando. All rights reserved.
 |------|------------|
 | `samples/sample_copilot_export_SYNTHETIC.csv` | Made-up Copilot Dashboard export (240 people, 26 weeks) for testing. Not real data |
 | `samples/Sample_Copilot_Deck_Contoso.pptx` | Example deck built from the synthetic export |
-| `samples/Demo_Client_Copilot_ROI (2).html` | Example dashboard saved from the browser |
+| `samples/Sample_Copilot_Dashboard_Demo_Client.html` | Example interactive dashboard built from the synthetic export (open it in a browser) |
 | `docs/screenshots/` | Screenshots of real tests in Claude Desktop, used in `TRY_IT.md` and `INSTALL.md` |
 | `images/` | Dashboard screenshots used in `README.md` |
 

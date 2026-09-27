@@ -7,3 +7,7 @@ column names Microsoft documents for the Copilot Dashboard data export (240 peop
 Real exports come from Copilot Dashboard (Viva Insights) > Export data > Export by week.
 If a real export uses different ID or date column names, `summarise_copilot_export` lists
 any metric columns it could not find.
+
+`Sample_Copilot_Dashboard_Demo_Client.html` is the interactive dashboard `create_roi_dashboard` builds from that
+file (SGD, S$92 an hour, S$38.40 per licence, S$50,000 rollout costs). `Sample_Copilot_Deck_Contoso.pptx` is an
+example client deck. Both use made-up data.
