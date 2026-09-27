@@ -1,5 +1,7 @@
 # Copilot Consultant MCP Server
 
+**An MCP server for Microsoft 365 Copilot consultants: Copilot adoption readiness, ROI, use cases and usage reports (Microsoft Graph, Copilot Dashboard, Viva Insights), with client-ready dashboards and PowerPoint decks.** It works in Claude Desktop, Claude Code, ChatGPT, OpenAI Codex, Copilot Studio and Microsoft 365 Copilot.
+
 **Created by Shenuka Fernando.** © 2026 Shenuka Fernando. All rights reserved. See [COPYRIGHT](COPYRIGHT).
 
 > Independent personal project by Shenuka INC. Not an official Microsoft product, and not endorsed by Microsoft.
