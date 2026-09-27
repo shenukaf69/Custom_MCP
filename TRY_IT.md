@@ -2,14 +2,14 @@
 
 Created by Shenuka Fernando. © 2026 Shenuka Fernando. All rights reserved.
 
-Everything below uses the sample files in `samples/`, so you can try every tool without client data.
+Replace `<you>` in the paths below with your Windows username. Everything below uses the sample files in `samples/`, so you can try every tool without client data.
 `samples/sample_copilot_export_SYNTHETIC.csv` is made-up data in the Copilot Dashboard export format.
 
 ## Setup and updates (PowerShell)
 
 First time:
 ```powershell
-cd C:\Users\shenu
+cd C:\Users\<you>
 git clone https://github.com/shenukaf69/Custom_MCP.git
 cd Custom_MCP
 python -m venv .venv
@@ -20,7 +20,7 @@ python demo.py
 
 After changes on GitHub:
 ```powershell
-cd C:\Users\shenu\Custom_MCP
+cd C:\Users\<you>\Custom_MCP
 .venv\Scripts\Activate.ps1
 git pull
 pip install -r requirements.txt
@@ -72,7 +72,7 @@ Claude calls four tools in one go and writes a meeting brief:
 
 ### Analysis
 ```
-Summarise the Copilot export at C:\Users\shenu\Custom_MCP\samples\sample_copilot_export_SYNTHETIC.csv
+Summarise the Copilot export at C:\Users\<you>\Custom_MCP\samples\sample_copilot_export_SYNTHETIC.csv
 ```
 ![Claude summarising the sample export](docs/screenshots/05-summarise-export.png)
 
@@ -96,7 +96,7 @@ actions, so give estimates for those (or use a Copilot Dashboard export).
 
 ### Build: dashboard
 ```
-Create an ROI dashboard for Demo Client using the Copilot export at C:\Users\shenu\Custom_MCP\samples\sample_copilot_export_SYNTHETIC.csv. Currency SGD: hourly cost 92, licence cost per user per month 38.4, one-off costs 50000. Prepared by Shenuka Fernando.
+Create an ROI dashboard for Demo Client using the Copilot export at C:\Users\<you>\Custom_MCP\samples\sample_copilot_export_SYNTHETIC.csv. Currency SGD: hourly cost 92, licence cost per user per month 38.4, one-off costs 50000. Prepared by Shenuka Fernando.
 ```
 The dashboard's three tabs:
 
@@ -109,11 +109,11 @@ Always give the hourly cost, licence price and rollout costs. If you leave them 
 
 ### Build: PowerPoint deck
 ```
-Create a client deck for Demo Client in SGD using C:\Users\shenu\Custom_MCP\samples\sample_copilot_export_SYNTHETIC.csv: S$92 an hour, S$38.40 per licence, S$50,000 rollout costs. Readiness: licences yes, DLP no, SharePoint reviewed no, sponsor yes, change plan yes. Retail, Operations. Prepared by Shenuka Fernando.
+Create a client deck for Demo Client in SGD using C:\Users\<you>\Custom_MCP\samples\sample_copilot_export_SYNTHETIC.csv: S$92 an hour, S$38.40 per licence, S$50,000 rollout costs. Readiness: licences yes, DLP no, SharePoint reviewed no, sponsor yes, change plan yes. Retail, Operations. Prepared by Shenuka Fernando.
 ```
 With your own template (widescreen .pptx or .potx):
 ```
-Create the same client deck using my template C:\Users\shenu\Documents\my-template.pptx
+Create the same client deck using my template C:\Users\<you>\Documents\my-template.pptx
 ```
 Readiness only:
 ```
@@ -137,7 +137,7 @@ Here's what Claude did with the readiness result, turned into an infographic in 
 
 ## PowerShell: call the tools directly (no Claude needed)
 
-Run these in `C:\Users\shenu\Custom_MCP` with `(.venv)` active.
+Run these in `C:\Users\<you>\Custom_MCP` with `(.venv)` active.
 
 ```powershell
 # Discovery and planning
